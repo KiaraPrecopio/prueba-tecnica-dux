@@ -15,6 +15,6 @@ public interface EquiposRepository extends JpaRepository<Equipos, Long> {
     @Query("SELECT e FROM Equipos e WHERE LOWER(e.nombre) LIKE LOWER(CONCAT('%',:name,'%'))")
     List<Equipos> findByName(@Param("name") String name);
 
-    @Query("SELECT EXISTS (SELECT 1 FROM Equipos e WHERE LOWER(e.nombre) = LOWER(:nombre))")
-    boolean findDuplicatedEquipos(@Param("nombre") String nombre);
+    @Query("SELECT CASE WHEN COUNT(e) > 0 THEN TRUE ELSE FALSE END FROM Equipos e WHERE LOWER(e.nombre) = LOWER(:nombre) AND (:id IS NULL OR e.id != :id)")
+    boolean isNameDuplicated(@Param("nombre") String nombre, @Param("id") Long id);
 }

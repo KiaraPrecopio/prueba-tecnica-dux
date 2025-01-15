@@ -1,17 +1,21 @@
 package com.kiarap.pruebatecnica.service;
 
-import com.kiarap.pruebatecnica.api.IEquiposService;
 import com.kiarap.pruebatecnica.dto.EquiposRequestDTO;
 import com.kiarap.pruebatecnica.dto.EquiposResponseDTO;
+import com.kiarap.pruebatecnica.exception.CustomException;
 import com.kiarap.pruebatecnica.model.Equipos;
 import com.kiarap.pruebatecnica.repository.EquiposRepository;
+import com.kiarap.pruebatecnica.api.IEquiposService;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
 public class EquiposService implements IEquiposService {
+
+    private static final String EQUIPO_NOT_FOUND_MESSAGE = "Equipo no encontrado";
 
     @Autowired
     private EquiposRepository equiposRepository;
@@ -36,55 +40,57 @@ public class EquiposService implements IEquiposService {
     public EquiposResponseDTO getById(final Long id) {
         return equiposRepository.findById(id)
             .map(this::buildResponse)
-            .orElseThrow(() -> new RuntimeException("No se encontró el equipo"));
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, EQUIPO_NOT_FOUND_MESSAGE));
     }
 
     @Override
     public List<EquiposResponseDTO> getByName(final String name) {
-        return equiposRepository.findByName(name).stream()
+        final List<Equipos> equipos = equiposRepository.findByName(name);
+        if (equipos.isEmpty()) {
+            throw new CustomException(HttpStatus.NOT_FOUND, String.format("No se encuentran presentes equipos con el nombre '%s'", name));
+        }
+        return equipos.stream()
             .map(this::buildResponse)
             .collect(Collectors.toList());
     }
 
     @Override
     public EquiposResponseDTO save(final EquiposRequestDTO equiposRequestDTO) {
-        System.out.println("pais: " + equiposRequestDTO.getPais());
-        String errorMessage = validateEquipo(equiposRequestDTO.toEntity());
-        if (errorMessage != null) {
-            throw new IllegalArgumentException(errorMessage);
+        if (equiposRequestDTO.getNombre() == null || equiposRequestDTO.getLiga() == null || equiposRequestDTO.getPais() == null) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, "La solicitud es inválida");
         }
-        Equipos equipo = Equipos.builder().nombre(equiposRequestDTO.getNombre()).liga(equiposRequestDTO.getLiga()).pais(equiposRequestDTO.getPais()).build();
+        validateNameEquipo(equiposRequestDTO.getNombre(), null);
+        final Equipos equipo = Equipos.builder()
+                        .nombre(equiposRequestDTO.getNombre())
+                        .liga(equiposRequestDTO.getLiga())
+                        .pais(equiposRequestDTO.getPais()).build();
         equiposRepository.save(equipo);
         return buildResponse(equipo);
     }
 
     @Override
     public EquiposResponseDTO update(final Long id, final EquiposRequestDTO equiposRequestDTO) {
-        Equipos equipo = equiposRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("No se encontró el equipo"));
+        final Equipos equipo = equiposRepository.findById(id)
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, EQUIPO_NOT_FOUND_MESSAGE));
         equipo.setNombre(equiposRequestDTO.getNombre() != null ? equiposRequestDTO.getNombre() : equipo.getNombre());
         equipo.setLiga(equiposRequestDTO.getLiga() != null ? equiposRequestDTO.getLiga() : equipo.getLiga());
         equipo.setPais(equiposRequestDTO.getPais() != null ? equiposRequestDTO.getPais() : equipo.getPais());
-        String errorMessage = validateEquipo(equipo);
-        if (errorMessage != null) {
-            throw new IllegalArgumentException(errorMessage);
-        }
-        Equipos updatedEquipo = equiposRepository.save(equipo);
+        validateNameEquipo(equipo.getNombre(), id);
+        final Equipos updatedEquipo = equiposRepository.save(equipo);
         return buildResponse(updatedEquipo);
     }
 
-    private String validateEquipo(final Equipos equipo) {
-        final boolean equipoExists = equiposRepository.findDuplicatedEquipos(equipo.getNombre());
+    private void validateNameEquipo(final String nombre, final Long id) {
+        final boolean equipoExists = equiposRepository.isNameDuplicated(nombre, id);
         if (equipoExists) {
-            return "El equipo ya existe";
+            throw new CustomException(HttpStatus.BAD_REQUEST, "La solicitud es inválida");
         }
-        return null;
     }
 
     @Override
     public void delete(final Long id) {
-        Equipos equipo = equiposRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("No se encontró el equipo"));
+        final Equipos equipo = equiposRepository.findById(id)
+            .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, EQUIPO_NOT_FOUND_MESSAGE));
         equiposRepository.delete(equipo);
     }
 }

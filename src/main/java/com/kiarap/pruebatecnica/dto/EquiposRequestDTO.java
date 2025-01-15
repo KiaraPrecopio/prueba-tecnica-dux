@@ -1,6 +1,5 @@
 package com.kiarap.pruebatecnica.dto;
 
-import com.kiarap.pruebatecnica.model.Equipos;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
@@ -20,12 +19,4 @@ public class EquiposRequestDTO {
 
     @Schema(description = "País del equipo", example = "Pais 1")
     private String pais;
-
-    public Equipos toEntity() {
-        Equipos equipo = new Equipos();
-        equipo.setNombre(this.nombre);
-        equipo.setLiga(this.liga);
-        equipo.setPais(this.pais);
-        return equipo;
-    }
 }

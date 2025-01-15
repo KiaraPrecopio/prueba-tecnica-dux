@@ -1,8 +1,9 @@
 package com.kiarap.pruebatecnica.controller;
 
-import com.kiarap.pruebatecnica.api.ILoginService;
 import com.kiarap.pruebatecnica.controller.path.RestRoutes;
 import com.kiarap.pruebatecnica.dto.UserRequestDTO;
+import com.kiarap.pruebatecnica.utils.ErrorResponse;
+import com.kiarap.pruebatecnica.api.ILoginService;
 import com.kiarap.pruebatecnica.dto.LoginResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -32,7 +33,7 @@ public class LoginController {
             ),
             responses = {
                     @ApiResponse(responseCode = "200", description = "Login exitoso"),
-                    @ApiResponse(responseCode = "401", description = "Credenciales inválidas")
+                    @ApiResponse(responseCode = "401", description = "Credenciales inválidas", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
             })
     public ResponseEntity<Mono<LoginResponseDTO>> login(@RequestBody final UserRequestDTO dto) {
         return ResponseEntity.ok(loginService.login(dto));
