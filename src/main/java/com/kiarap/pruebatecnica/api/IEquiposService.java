@@ -1,21 +1,21 @@
 package com.kiarap.pruebatecnica.api;
 
+import java.util.List;
+
 import com.kiarap.pruebatecnica.dto.EquiposRequestDTO;
 import com.kiarap.pruebatecnica.dto.EquiposResponseDTO;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 public interface IEquiposService {
 
-    Flux<EquiposResponseDTO> getAll();
+    List<EquiposResponseDTO> getAll();
 
-    Mono<EquiposResponseDTO> getById(Long id);
+    EquiposResponseDTO getById(final Long id);
 
-    Mono<EquiposResponseDTO> getByName(String name);
+    List<EquiposResponseDTO> getByName(final String name);
 
-    Mono<EquiposResponseDTO> save(EquiposRequestDTO equiposRequestDTO);
+    EquiposResponseDTO save(final EquiposRequestDTO equiposRequestDTO);
 
-    Mono<EquiposResponseDTO> update(Long id, EquiposRequestDTO equiposRequestDTO);
+    EquiposResponseDTO update(final Long id, final EquiposRequestDTO equiposRequestDTO);
 
-    Mono<Void> delete(Long id);
+    void delete(final Long id);
 }

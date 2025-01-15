@@ -8,21 +8,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Tag(name = "Equipos", description = "Operaciones relacionadas a los equipos.")
@@ -40,7 +32,7 @@ public class EquiposController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = EquiposResponseDTO.class))),
             }
     )
-     public ResponseEntity<Flux<EquiposResponseDTO>> obtenerEquipos() {
+     public ResponseEntity<List<EquiposResponseDTO>> obtenerEquipos() {
         return ResponseEntity.ok(equiposService.getAll());
     }
 
@@ -56,7 +48,7 @@ public class EquiposController {
                 @ApiResponse(responseCode = "404", description = "Equipo no encontrado.")
             }
     )
-    public ResponseEntity<Mono<EquiposResponseDTO>> obtenerEquipo(@PathVariable final Long id) {
+    public ResponseEntity<EquiposResponseDTO> obtenerEquipo(@PathVariable final Long id) {
         return ResponseEntity.ok(equiposService.getById(id));
     }
 
@@ -72,28 +64,28 @@ public class EquiposController {
                 @ApiResponse(responseCode = "404", description = "Equipo no encontrado.")
             }
     )
-    public ResponseEntity<Mono<EquiposResponseDTO>> buscarEquipo(@RequestParam final String nombre) {
+    public ResponseEntity<List<EquiposResponseDTO>> buscarEquipo(@RequestParam final String nombre) {
         return ResponseEntity.ok(equiposService.getByName(nombre));
     }
 
     @PostMapping(value = RestRoutes.EQUIPOS.EQUIPOS)
     @Operation(summary = "Crear un equipo.",
             description = "Crear un equipo nuevo.",
-            requestBody = @RequestBody(description = "Cuerpo de la petición."),
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Cuerpo de la petición."),
             responses = {
                 @ApiResponse(responseCode = "200", description = "Successful operation.",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = EquiposResponseDTO.class))),
                 @ApiResponse(responseCode = "400", description = "Equipo ya existe.")
             }
     )
-    public ResponseEntity<Mono<EquiposResponseDTO>> crearEquipo(@RequestBody final EquiposRequestDTO dto) {
+    public ResponseEntity<EquiposResponseDTO> crearEquipo(@RequestBody final EquiposRequestDTO dto) {
         return ResponseEntity.ok(equiposService.save(dto));
     }
 
     @PutMapping(value = RestRoutes.EQUIPOS.EQUIPOS_PATH)
     @Operation(summary = "Actualizar un equipo.",
             description = "Actualizar un equipo existente.",
-            requestBody = @RequestBody(description = "Cuerpo de la petición."),
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Cuerpo de la petición."),
             parameters = {
                     @Parameter(name = "id", description = "Identificador del equipo.", required = true)
             },
@@ -103,7 +95,7 @@ public class EquiposController {
                     @ApiResponse(responseCode = "404", description = "Equipo no encontrado.")
             }
     )
-    public ResponseEntity<Mono<EquiposResponseDTO>> actualizarEquipo(@PathVariable final Long id, @RequestBody final EquiposRequestDTO dto) {
+    public ResponseEntity<EquiposResponseDTO> actualizarEquipo(@PathVariable final Long id, @RequestBody final EquiposRequestDTO dto) {
         return ResponseEntity.ok(equiposService.update(id, dto));
     }
 
@@ -118,7 +110,8 @@ public class EquiposController {
                 @ApiResponse(responseCode = "404", description = "Equipo no encontrado.")
             }
     )
-    public ResponseEntity<Mono<Void>> eliminarEquipo(@PathVariable final Long id) {
-        return ResponseEntity.ok(equiposService.delete(id));
+    public ResponseEntity<Void> eliminarEquipo(@PathVariable final Long id) {
+        equiposService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

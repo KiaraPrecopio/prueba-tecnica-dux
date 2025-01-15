@@ -3,8 +3,6 @@ package com.kiarap.pruebatecnica.service;
 import com.kiarap.pruebatecnica.api.ILoginService;
 import com.kiarap.pruebatecnica.dto.UserRequestDTO;
 import com.kiarap.pruebatecnica.dto.LoginResponseDTO;
-import com.kiarap.pruebatecnica.model.Usuarios;
-import com.kiarap.pruebatecnica.repository.UsuariosRepository;
 import com.kiarap.pruebatecnica.utils.CustomUserDetailsService;
 import com.kiarap.pruebatecnica.utils.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +13,6 @@ import reactor.core.publisher.Mono;
 @Service
 public class LoginService implements ILoginService {
 
-    @Autowired
-    private UsuariosRepository userRepository;
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
     @Autowired
@@ -35,17 +31,5 @@ public class LoginService implements ILoginService {
                         return Mono.error(new RuntimeException("Invalid password"));
                     }
                 });
-    }
-
-    public Mono<Void> register(final UserRequestDTO userRequestDTO) {
-        return Mono.justOrEmpty(userRepository.findByUsername(userRequestDTO.getUsername()))
-                .switchIfEmpty(Mono.defer(() -> {
-                    final Usuarios newUser = new Usuarios();
-                    newUser.setUsername(userRequestDTO.getUsername());
-                    newUser.setPassword(passwordEncoder.encode(userRequestDTO.getPassword()));
-                    userRepository.save(newUser);
-                    return Mono.empty();
-                }))
-                .flatMap(user -> Mono.error(new RuntimeException("User already exists")));
     }
 }

@@ -37,19 +37,4 @@ public class LoginController {
     public ResponseEntity<Mono<LoginResponseDTO>> login(@RequestBody final UserRequestDTO dto) {
         return ResponseEntity.ok(loginService.login(dto));
     }
-
-    @PostMapping(RestRoutes.LOGIN.REGISTER)
-    @Operation(summary = "Registro de usuario",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Registro Body Request",
-                    required = true,
-                    content = @Content(schema = @Schema(implementation = UserRequestDTO.class))
-            ),
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Registro exitoso"),
-                    @ApiResponse(responseCode = "400", description = "Usuario ya existe")
-            })
-    public ResponseEntity<Mono<Void>> register(@RequestBody final UserRequestDTO dto) {
-        return ResponseEntity.ok(loginService.register(dto));
-    }
 }

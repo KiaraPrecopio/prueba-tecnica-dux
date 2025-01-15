@@ -22,10 +22,10 @@ public class EquiposRequestDTO {
     private String pais;
 
     public Equipos toEntity() {
-        return Equipos.builder()
-                .nombre(this.nombre)
-                .liga(this.liga)
-                .pais(this.pais)
-                .build();
+        Equipos equipo = new Equipos();
+        equipo.setNombre(this.nombre);
+        equipo.setLiga(this.liga);
+        equipo.setPais(this.pais);
+        return equipo;
     }
 }

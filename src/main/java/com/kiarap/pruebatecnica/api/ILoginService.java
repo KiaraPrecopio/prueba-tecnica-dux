@@ -7,6 +7,4 @@ import reactor.core.publisher.Mono;
 public interface ILoginService {
 
     Mono<LoginResponseDTO> login(UserRequestDTO userRequestDTO);
-
-    Mono<Void> register(UserRequestDTO userRequestDTO);
 }
