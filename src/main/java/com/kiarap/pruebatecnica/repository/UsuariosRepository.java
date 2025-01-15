@@ -1,6 +1,5 @@
 package com.kiarap.pruebatecnica.repository;
 
-import com.kiarap.pruebatecnica.model.Equipos;
 import com.kiarap.pruebatecnica.model.Usuarios;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

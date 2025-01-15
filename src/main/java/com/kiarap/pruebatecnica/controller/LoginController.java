@@ -11,20 +11,19 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 @RestController
-@Tag(name = "Login", description = "Login API")
+@Tag(name = "Authentication", description = "Operaciones relacionadas a la autenticación.")
 public class LoginController {
 
     @Autowired
     private ILoginService loginService;
 
-    @GetMapping(RestRoutes.LOGIN.LOGIN)
+    @PostMapping(RestRoutes.LOGIN.LOGIN)
     @Operation(summary = "Login de usuario",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Login Body Request",
@@ -35,7 +34,7 @@ public class LoginController {
                     @ApiResponse(responseCode = "200", description = "Login exitoso"),
                     @ApiResponse(responseCode = "401", description = "Credenciales inválidas")
             })
-    public ResponseEntity<Mono<LoginResponseDTO>> login(@RequestBody UserRequestDTO dto) {
+    public ResponseEntity<Mono<LoginResponseDTO>> login(@RequestBody final UserRequestDTO dto) {
         return ResponseEntity.ok(loginService.login(dto));
     }
 
@@ -50,7 +49,7 @@ public class LoginController {
                     @ApiResponse(responseCode = "200", description = "Registro exitoso"),
                     @ApiResponse(responseCode = "400", description = "Usuario ya existe")
             })
-    public ResponseEntity<Mono<Void>> register(@RequestBody UserRequestDTO dto) {
+    public ResponseEntity<Mono<Void>> register(@RequestBody final UserRequestDTO dto) {
         return ResponseEntity.ok(loginService.register(dto));
     }
 }

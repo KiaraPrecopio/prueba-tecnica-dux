@@ -5,8 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Entity
-@Table(name = "USUARIOS")
 @Data
+@Table(name = "USUARIOS")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
