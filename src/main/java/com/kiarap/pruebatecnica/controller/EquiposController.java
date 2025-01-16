@@ -18,7 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@Tag(name = "Equipos", description = "Operaciones relacionadas a los equipos.")
+@Tag(name = "Equipos", description = "Peticiones relacionadas a los equipos.")
 @SecurityRequirement(name = "JWT")
 public class EquiposController {
 
@@ -27,10 +27,11 @@ public class EquiposController {
 
     @GetMapping(value = RestRoutes.EQUIPOS.EQUIPOS)
     @Operation(summary = "Obtener todos los equipos.",
-        description = "Obtener todos los equipos existentes.",
+        description = "Endpoint para obtener todos los equipos presentes en la base de datos.",
         responses = {
-            @ApiResponse(responseCode = "200", description = "Successful operation.",
-                content = @Content(mediaType = "application/json", schema = @Schema(implementation = EquiposResponseDTO.class))),
+            @ApiResponse(responseCode = "200", description = "Operacion exitosa",
+                content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = EquiposResponseDTO.class))),
         }
     )
      public ResponseEntity<List<EquiposResponseDTO>> obtenerEquipos() {
@@ -39,15 +40,17 @@ public class EquiposController {
 
     @GetMapping(value = RestRoutes.EQUIPOS.EQUIPOS_PATH)
     @Operation(summary = "Obtener un equipo.",
-        description = "Obtener un equipo existente.",
+        description = "Obtener un equipo existente por su Id.",
         parameters = {
-                @Parameter(name = "id", description = "Identificador del equipo.", required = true)
+                @Parameter(name = "id", description = "Id del equipo", required = true, example = "1")
         },
         responses = {
-            @ApiResponse(responseCode = "200", description = "Successful operation.",
-                content = @Content(mediaType = "application/json", schema = @Schema(implementation = EquiposResponseDTO.class))),
-            @ApiResponse(responseCode = "404", description = "Equipo no encontrado.",
-                content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            @ApiResponse(responseCode = "200", description = "Operacion exitosa",
+                content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = EquiposResponseDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Equipo no encontrado",
+                content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = ErrorResponse.class)))
         }
     )
     public ResponseEntity<EquiposResponseDTO> obtenerEquipo(@PathVariable final Long id) {
@@ -55,16 +58,18 @@ public class EquiposController {
     }
 
     @GetMapping(value = RestRoutes.EQUIPOS.EQUIPOS_SEARCH)
-    @Operation(summary = "Buscar equipo por nombre",
-        description = "Buscar un equipo por su nombre.",
+    @Operation(summary = "Buscar por nombre",
+        description = "Buscar un equipo por su nombre en la base de datos.",
         parameters = {
-            @Parameter(name = "nombre", description = "Nombre del equipo.", required = true)
+            @Parameter(name = "nombre", description = "Nombre del equipo.", required = true, example = "Real Madrid")
         },
         responses = {
             @ApiResponse(responseCode = "200", description = "Successful operation.",
-                content = @Content(mediaType = "application/json", schema = @Schema(implementation = EquiposResponseDTO.class))),
+                content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = EquiposResponseDTO.class))),
             @ApiResponse(responseCode = "404", description = "Equipo no encontrado.",
-                content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+                content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = ErrorResponse.class)))
         }
     )
     public ResponseEntity<List<EquiposResponseDTO>> buscarEquipo(@RequestParam final String nombre) {
@@ -73,32 +78,35 @@ public class EquiposController {
 
     @PostMapping(value = RestRoutes.EQUIPOS.EQUIPOS)
     @Operation(summary = "Crear un equipo.",
-        description = "Crear un equipo nuevo.",
+        description = "Crear un equipo nuevo en la base de datos.",
         requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Cuerpo de la petición."),
         responses = {
             @ApiResponse(responseCode = "201", description = "Equipo creado exitosamente.",
-                content = @Content(mediaType = "application/json", schema = @Schema(implementation = EquiposResponseDTO.class))),
+                content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = EquiposResponseDTO.class))),
             @ApiResponse(responseCode = "400", description = "La solicitud es inválida.",
-                content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+                content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = ErrorResponse.class)))
         }
     )
     public ResponseEntity<EquiposResponseDTO> crearEquipo(@RequestBody final EquiposRequestDTO dto) {
-        EquiposResponseDTO response = equiposService.save(dto);
-        return ResponseEntity.status(201).body(response);
+        return ResponseEntity.status(201).body(equiposService.save(dto));
     }
 
     @PutMapping(value = RestRoutes.EQUIPOS.EQUIPOS_PATH)
     @Operation(summary = "Actualizar un equipo.",
-        description = "Actualizar un equipo existente.",
+        description = "Actualizar un equipo existente en la base de datos.",
         requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Cuerpo de la petición."),
         parameters = {
-            @Parameter(name = "id", description = "Identificador del equipo.", required = true)
+            @Parameter(name = "id", description = "Id del equipo.", required = true, example = "1")
         },
         responses = {
             @ApiResponse(responseCode = "200", description = "Successful operation.",
-                content = @Content(mediaType = "application/json", schema = @Schema(implementation = EquiposResponseDTO.class))),
+                content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = EquiposResponseDTO.class))),
             @ApiResponse(responseCode = "404", description = "Equipo no encontrado.",
-                content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+                content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = ErrorResponse.class)))
         }
     )
     public ResponseEntity<EquiposResponseDTO> actualizarEquipo(@PathVariable final Long id, @RequestBody final EquiposRequestDTO dto) {
@@ -107,14 +115,15 @@ public class EquiposController {
 
     @DeleteMapping(value = RestRoutes.EQUIPOS.EQUIPOS_PATH)
     @Operation(summary = "Eliminar un equipo.",
-            description = "Eliminar un equipo existente.",
+            description = "Eliminar un equipo existente en la base de datos.",
             parameters = {
-                    @Parameter(name = "id", description = "Identificador del equipo.", required = true)
+                    @Parameter(name = "id", description = "Id del equipo.", required = true, example = "1")
             },
             responses = {
-                @ApiResponse(responseCode = "200", description = "Successful operation."),
+                @ApiResponse(responseCode = "200", description = "Operación exitosa."),
                 @ApiResponse(responseCode = "404", description = "Equipo no encontrado.",
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+                    content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorResponse.class)))
             }
     )
     public ResponseEntity<Void> eliminarEquipo(@PathVariable final Long id) {

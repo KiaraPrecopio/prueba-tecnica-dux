@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SwaggerConfig {
     private static final String SECURITY_SCHEME_NAME = "JWT";
-    private static final String TITLE = "Prueba Técnica API";
+    private static final String TITLE = "Prueba Técnica - EQUIPOS API";
     private static final String DESCRIPTION = "Proyecto Generado por Kiara Precopio";
     private static final String VERSION = "1.0";
     private static final Contact CONTACT = new Contact()

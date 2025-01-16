@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 @RestController
-@Tag(name = "Authentication", description = "Operaciones relacionadas a la autenticación.")
+@Tag(name = "Autenticación", description = "Operaciones relacionadas a la autenticación.")
 public class LoginController {
 
     @Autowired
@@ -26,14 +26,19 @@ public class LoginController {
 
     @PostMapping(RestRoutes.LOGIN.LOGIN)
     @Operation(summary = "Login de usuario",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Login Body Request",
-                    required = true,
-                    content = @Content(schema = @Schema(implementation = UserRequestDTO.class))
-            ),
+        description = "Endpoint para autenticar un usuario en el sistema.",
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                                description = "Login Body Request",
+                                required = true,
+                                content = @Content(schema = @Schema(implementation = UserRequestDTO.class))
+                        ),
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Login exitoso"),
-                    @ApiResponse(responseCode = "401", description = "Credenciales inválidas", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+                    @ApiResponse(responseCode = "200", description = "Login exitoso",
+                    content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = LoginResponseDTO.class))),
+                    @ApiResponse(responseCode = "401", description = "Credenciales inválidas",
+                    content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorResponse.class)))
             })
     public ResponseEntity<Mono<LoginResponseDTO>> login(@RequestBody final UserRequestDTO dto) {
         return ResponseEntity.ok(loginService.login(dto));

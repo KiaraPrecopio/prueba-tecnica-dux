@@ -11,15 +11,15 @@ import lombok.*;
 @Schema(description = "DTO para la respuesta de los equipos")
 public class EquiposResponseDTO {
 
-    @Schema(description = "Id del equipo")
+    @Schema(description = "Id del equipo", example = "1")
     private Long id;
 
-    @Schema(description = "Nombre del equipo")
+    @Schema(description = "Nombre del equipo", example = "Real Madrid")
     private String nombre;
 
-    @Schema(description = "Liga del equipo")
+    @Schema(description = "Liga del equipo", example = "La Liga")
     private String liga;
 
-    @Schema(description = "País del equipo")
+    @Schema(description = "País del equipo" , example = "España")
     private String pais;
 }
