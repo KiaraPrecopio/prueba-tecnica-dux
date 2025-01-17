@@ -8,6 +8,7 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 @Schema(description = "DTO para la creación de equipos")
 public class EquiposRequestDTO {
 

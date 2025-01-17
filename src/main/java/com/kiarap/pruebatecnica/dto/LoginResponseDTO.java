@@ -8,6 +8,7 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 @Schema(description = "DTO para la respuesta de la autenticación")
 public class LoginResponseDTO {
 
